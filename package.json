@@ -1,0 +1,30 @@
+{
+  "name": "lecture-scraper",
+  "version": "1.0.0",
+  "description": "A Flask-based website that scrapes lecture content from partner websites and displays them in a beautiful interface",
+  "main": "server.py",
+  "scripts": {
+    "build": "./build.sh",
+    "start": "./start.sh",
+    "dev": "./start.sh",
+    "install": "./build.sh",
+    "setup": "./build.sh"
+  },
+  "keywords": [
+    "flask",
+    "web-scraping",
+    "education",
+    "lectures",
+    "beautifulsoup",
+    "python"
+  ],
+  "author": "Lecture Scraper Project",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "."
+  },
+  "engines": {
+    "python": ">=3.7"
+  }
+}

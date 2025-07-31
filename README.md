@@ -29,33 +29,55 @@ The application features a beautiful pastel gradient theme with:
 - Python 3.7 or higher
 - pip (Python package installer)
 
-### Installation
+### Installation & Setup
 
-1. **Clone or download the project files**
-   ```bash
-   # Make sure you have these files:
-   # - server.py
-   # - requirements.txt
-   # - templates/index.html
-   # - templates/admin.html
-   # - templates/edit.html
-   # - static/styles.css
-   ```
+Choose your preferred method:
 
-2. **Install dependencies**
-   ```bash
-   pip install -r requirements.txt
-   ```
+#### Option 1: Quick Start (Recommended)
+```bash
+# Build and setup everything
+./build.sh
 
-3. **Run the application**
-   ```bash
-   python server.py
-   ```
+# Start the server
+./start.sh
+```
 
-4. **Open your browser**
-   ```
-   Navigate to: http://localhost:5000
-   ```
+#### Option 2: Using Make
+```bash
+# Setup the project
+make build
+
+# Start the server
+make start
+```
+
+#### Option 3: Using npm-style commands
+```bash
+# Setup the project
+npm run build
+
+# Start the server
+npm start
+```
+
+#### Option 4: Manual Setup
+```bash
+# Create virtual environment
+python3 -m venv lecture_env
+source lecture_env/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the application
+python server.py
+```
+
+#### Access the Application
+```
+Homepage: http://localhost:5000
+Admin Panel: http://localhost:5000/admin
+```
 
 ## 📖 How to Use
 
@@ -155,6 +177,48 @@ The codebase is beginner-friendly and modular:
 - Templates use Jinja2 for dynamic content
 - CSS is organized with clear sections
 - JavaScript adds progressive enhancement
+
+## 🛠️ Available Commands
+
+The project provides multiple ways to build and run the application:
+
+### Build Commands
+```bash
+./build.sh           # Complete project setup
+make build           # Using Make
+npm run build        # Using npm scripts
+```
+
+### Start Commands
+```bash
+./start.sh           # Start the Flask server
+make start           # Using Make
+npm start            # Using npm scripts
+npm run dev          # Development mode (same as start)
+```
+
+### Utility Commands
+```bash
+make help            # Show available Make commands
+make clean           # Clean up build artifacts
+make test            # Run basic functionality tests
+make install         # Install dependencies only
+```
+
+### What the Build Script Does
+- ✅ Checks Python version compatibility
+- ✅ Installs system dependencies (if needed)
+- ✅ Creates Python virtual environment
+- ✅ Installs Python packages from requirements.txt
+- ✅ Creates necessary directories
+- ✅ Sets proper file permissions
+- ✅ Verifies installation
+
+### What the Start Script Does
+- ✅ Activates virtual environment
+- ✅ Installs/updates dependencies
+- ✅ Starts Flask development server
+- ✅ Shows access URLs and instructions
 
 ## 🔧 Troubleshooting
 
