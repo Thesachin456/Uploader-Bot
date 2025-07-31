@@ -248,8 +248,40 @@ The app runs in debug mode by default, which:
 
 ### Production Deployment
 
-For production use:
-1. Set `debug=False` in `server.py`
+#### Render Deployment (Recommended)
+
+The application is ready for Render deployment with these files:
+
+1. **render.yaml** - Render configuration
+2. **start_render.py** - Production start script
+3. **requirements.txt** - Python dependencies
+
+**Deploy to Render:**
+```bash
+# 1. Push to GitHub/GitLab
+git init
+git add .
+git commit -m "Initial commit"
+git push origin main
+
+# 2. Connect to Render
+# - Visit render.com
+# - Connect your repository
+# - Render will automatically detect render.yaml
+```
+
+**Environment Variables for Render:**
+- `FLASK_ENV=production` (automatically set)
+- `PORT` (automatically set by Render)
+
+**Start Commands Available:**
+- `python start_render.py` - Simple Flask server
+- `python start_render_gunicorn.py` - Gunicorn for better performance
+
+#### Other Production Options
+
+For other platforms:
+1. Set `FLASK_ENV=production` environment variable
 2. Use a production WSGI server (gunicorn, uWSGI)
 3. Set up proper error logging
 4. Consider using a real database for larger datasets
