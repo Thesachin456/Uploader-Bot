@@ -1,69 +1,217 @@
-#### [UPLOADER-BOT](https://t.me/TechnicalCynite)
+# 📚 Lecture Scraper - Flask Web Application
 
-[![Size](https://img.shields.io/github/repo-size/CyniteOfficial/Uploader-Bot?style=flat-square&color=green)](https://github.com/CyniteOfficial/Uploader-Bot)
+A beautiful, responsive Flask web application that can scrape lecture content from partner websites and display them in an elegant, pastel-themed interface.
+
+## ✨ Features
+
+- **🔍 Web Scraping**: Automatically extract lecture content from any URL
+- **📱 Responsive Design**: Beautiful pastel theme that works on mobile and desktop
+- **🎥 Video Support**: Embed YouTube, Vimeo, and other video content
+- **📝 Notes Management**: Extract and display text-based lecture notes
+- **⚙️ Admin Panel**: Easy-to-use interface for managing lectures
+- **✏️ Edit Functionality**: Modify scraped content as needed
+- **🗑️ Delete Options**: Remove unwanted lectures
+- **💾 File Storage**: Simple JSON-based storage (no database required)
+
+## 🎨 Screenshots
+
+The application features a beautiful pastel gradient theme with:
+- Soft color palette (purple, blue, pink, orange)
+- Smooth animations and hover effects
+- Card-based layout for lectures
+- Responsive grid system
+- Glass-morphism design elements
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.7 or higher
+- pip (Python package installer)
+
+### Installation
+
+1. **Clone or download the project files**
+   ```bash
+   # Make sure you have these files:
+   # - server.py
+   # - requirements.txt
+   # - templates/index.html
+   # - templates/admin.html
+   # - templates/edit.html
+   # - static/styles.css
+   ```
+
+2. **Install dependencies**
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. **Run the application**
+   ```bash
+   python server.py
+   ```
+
+4. **Open your browser**
+   ```
+   Navigate to: http://localhost:5000
+   ```
+
+## 📖 How to Use
+
+### Adding Lectures
+
+1. **Go to Admin Panel**
+   - Visit `http://localhost:5000/admin`
+   - Or click "⚙️ Admin Panel" from the homepage
+
+2. **Enter a Lecture URL**
+   - Paste the URL of a webpage containing lecture content
+   - Click "🔍 Scrape & Add Lecture"
+
+3. **Wait for Processing**
+   - The app will automatically extract:
+     - Title
+     - Description
+     - Video links (YouTube, Vimeo, etc.)
+     - Text content and notes
+
+### Managing Lectures
+
+- **View All**: Homepage displays all lectures in a beautiful card layout
+- **Edit**: Click "✏️ Edit" to modify title, description, video URL, or notes
+- **Delete**: Click "🗑️ Delete" to remove a lecture (with confirmation)
+- **View Source**: Click "🔗 Source" to visit the original webpage
+
+### Supported Content Types
+
+The scraper can extract:
+- **Titles**: `<h1>`, `.title`, `#title`, `.lecture-title`, etc.
+- **Descriptions**: `.description`, `.summary`, meta descriptions
+- **Videos**: YouTube embeds, Vimeo links, direct video files
+- **Notes**: Paragraphs, bullet points, formatted text content
+
+## 🛠️ Technical Details
+
+### Project Structure
+```
+lecture-scraper/
+├── server.py              # Main Flask application
+├── requirements.txt       # Python dependencies
+├── lectures.json          # Data storage (auto-created)
+├── templates/
+│   ├── index.html         # Homepage template
+│   ├── admin.html         # Admin panel template
+│   └── edit.html          # Edit lecture template
+└── static/
+    └── styles.css         # Pastel theme CSS
+```
+
+### Dependencies
+
+- **Flask**: Web framework
+- **BeautifulSoup4**: HTML parsing and scraping
+- **Requests**: HTTP requests for web scraping
+- **lxml**: XML/HTML parser
+- **Werkzeug**: WSGI utilities
+
+### Data Storage
+
+Lectures are stored in `lectures.json` with this structure:
+```json
+[
+  {
+    "id": 1,
+    "title": "Lecture Title",
+    "description": "Lecture description",
+    "video_url": "https://youtube.com/watch?v=...",
+    "notes": ["Note 1", "Note 2", "..."],
+    "source_url": "https://original-url.com"
+  }
+]
+```
+
+## 🎨 Customization
+
+### Changing the Theme
+
+Edit `static/styles.css` to customize:
+- Colors: Modify the gradient backgrounds and color variables
+- Fonts: Change the font-family declarations
+- Layout: Adjust grid settings and spacing
+- Animations: Modify transition and animation properties
+
+### Modifying Scraping Logic
+
+Edit `server.py` functions:
+- `scrape_lecture_content()`: Main scraping logic
+- `extract_youtube_id()`: Video URL processing
+- Add new selectors for different website structures
+
+### Adding New Features
+
+The codebase is beginner-friendly and modular:
+- Routes are clearly defined in `server.py`
+- Templates use Jinja2 for dynamic content
+- CSS is organized with clear sections
+- JavaScript adds progressive enhancement
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+1. **"Failed to scrape" error**
+   - Check if the URL is accessible
+   - Some sites block automated requests
+   - Verify the site contains scrapeable content
+
+2. **Video not displaying**
+   - Ensure the video URL is correctly formatted
+   - Check if the video is publicly accessible
+   - Try editing the lecture to fix the video URL
+
+3. **Styling issues**
+   - Clear browser cache
+   - Check if `styles.css` is loading correctly
+   - Verify the Flask static file serving
+
+### Development Mode
+
+The app runs in debug mode by default, which:
+- Auto-reloads on code changes
+- Shows detailed error messages
+- Should not be used in production
+
+### Production Deployment
+
+For production use:
+1. Set `debug=False` in `server.py`
+2. Use a production WSGI server (gunicorn, uWSGI)
+3. Set up proper error logging
+4. Consider using a real database for larger datasets
+
+## 🤝 Contributing
+
+This is a beginner-friendly project! Areas for improvement:
+- Add more video platform support
+- Implement search functionality
+- Add user authentication
+- Create lecture categories/tags
+- Add export functionality
+- Improve mobile responsiveness
+
+## 📄 License
+
+This project is open source and available under the MIT License.
+
+## 🆘 Support
+
+If you encounter issues:
+1. Check the console output for error messages
+2. Verify all dependencies are installed correctly
+3. Ensure you're using a supported Python version
+4. Check that the target websites are accessible
 
 ---
 
-Telegram RoBot to Upload Links.
-
-**Features**:
-
-👉 Upload [yt-dlp Supported Links](https://ytdl-org.github.io/youtube-dl/supportedsites.html) to Telegram.
-
-👉 Upload HTTP/HTTPS as File/Video to Telegram.
-
-👉 Upload zee5, sony.live, voot and much more.
-
-👉 Inline torrent search support.
-
-👉  Permanent thumbnail Support.
-
-👉 Broadcast message.
-
-**Heroku Buildpacks**
-```
-https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest
-```
-```
-heroku/python
-```
-
-[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://dashboard.heroku.com/new?template=https://github.com/CyniteOfficial/Uploader-Bot)
-
-
-## 🍃 How To Get Mongodb URI - [ Watch Video ](https://youtu.be/bk3cinuwEfo)
-
-
-## 🚸 HEROKU CLI COMMANDS
-
-`* git clone https://github.com/CyniteOfficial/Uploader-Bot`
-
-`* heroku login`
-
-`* cd UPLOADER-BOT`
-
-`* heroku git:remote -a app-name`
-
-`* git pull origin V2.0`
-
-`* git push heroku V2.0:master`
-
-
-## BOT COMMANDS
-
-* start - 👻 Check I'm alive or dead
-* help - 📝 How to use this robot
-* search - 🚸 Torrent search
-* broadcast - 💌 Send message to users
-* total - 👨‍👨‍👦‍👦 To get total users count
-* viewthumbnail - 🌌 Current Thumbnail
-* delthumbnail - 🎇 Delete thumbnail
-
-## Credits, and Thanks to
-
-* [@SpEcHlDe](https://t.me/ThankTelegram) for his [AnyDLBot](https://telegram.dog/AnyDLBot)
-* [Dan Tès](https://t.me/haskell) for his [Pyrogram Library](https://github.com/pyrogram/pyrogram)
-* [Yoily](https://t.me/YoilyL) for his [UploaditBot](https://telegram.dog/UploaditBot)
-* [@DC4_WARRIOR](https://t.me/Space_X_bots) it's me
-#### LICENSE
-- GPLv3
+**Happy Learning!** 📚✨

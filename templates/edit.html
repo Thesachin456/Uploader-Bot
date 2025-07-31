@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Lecture - {{ lecture.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>✏️ Edit Lecture</h1>
+            <p class="subtitle">Update lecture information</p>
+            <nav>
+                <a href="{{ url_for('index') }}">🏠 View Lectures</a>
+                <a href="{{ url_for('admin') }}">⚙️ Admin Panel</a>
+            </nav>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Edit Form -->
+        <div class="admin-panel">
+            <h2 class="admin-title">📝 Edit "{{ lecture.title }}"</h2>
+            <form method="POST">
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input 
+                        type="text" 
+                        id="title" 
+                        name="title" 
+                        class="form-input" 
+                        value="{{ lecture.title }}"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea 
+                        id="description" 
+                        name="description" 
+                        class="form-input" 
+                        rows="4"
+                        placeholder="Brief description of the lecture"
+                    >{{ lecture.description }}</textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="video_url">Video URL:</label>
+                    <input 
+                        type="url" 
+                        id="video_url" 
+                        name="video_url" 
+                        class="form-input" 
+                        value="{{ lecture.video_url or '' }}"
+                        placeholder="https://youtube.com/watch?v=..."
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="notes">Notes (one per line):</label>
+                    <textarea 
+                        id="notes" 
+                        name="notes" 
+                        class="form-input" 
+                        rows="10"
+                        placeholder="Enter lecture notes, one per line..."
+                    >{{ lecture.notes_text }}</textarea>
+                </div>
+
+                <div class="card-actions">
+                    <button type="submit" class="btn btn-primary">
+                        💾 Save Changes
+                    </button>
+                    <a href="{{ url_for('admin') }}" class="btn btn-secondary">
+                        ❌ Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Preview Section -->
+        {% if lecture.video_url %}
+        <div class="admin-panel">
+            <h2 class="admin-title">👀 Current Video Preview</h2>
+            <div class="video-container" style="max-width: 600px; margin: 0 auto;">
+                {% if 'youtube.com' in lecture.video_url or 'youtu.be' in lecture.video_url %}
+                    {% set youtube_patterns = [
+                        'youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})',
+                        'youtu\.be\/([a-zA-Z0-9_-]{11})',
+                        'youtube\.com\/embed\/([a-zA-Z0-9_-]{11})'
+                    ] %}
+                    {% set video_id = none %}
+                    {% for pattern in youtube_patterns %}
+                        {% if not video_id %}
+                            {% set match = lecture.video_url | regex_search(pattern) %}
+                            {% if match %}
+                                {% set video_id = match.group(1) %}
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if video_id %}
+                        <iframe 
+                            src="https://www.youtube.com/embed/{{ video_id }}" 
+                            allowfullscreen>
+                        </iframe>
+                    {% else %}
+                        <iframe src="{{ lecture.video_url }}" allowfullscreen></iframe>
+                    {% endif %}
+                {% else %}
+                    <iframe src="{{ lecture.video_url }}" allowfullscreen></iframe>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-resize textareas
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                textarea.addEventListener('input', function() {
+                    this.style.height = 'auto';
+                    this.style.height = this.scrollHeight + 'px';
+                });
+                
+                // Initial resize
+                textarea.style.height = 'auto';
+                textarea.style.height = textarea.scrollHeight + 'px';
+            });
+
+            // Form validation feedback
+            const form = document.querySelector('form');
+            const titleInput = document.getElementById('title');
+            
+            form.addEventListener('submit', function(e) {
+                if (!titleInput.value.trim()) {
+                    e.preventDefault();
+                    alert('Please enter a title for the lecture.');
+                    titleInput.focus();
+                }
+            });
+
+            // Auto-focus on title input
+            titleInput.focus();
+            titleInput.setSelectionRange(titleInput.value.length, titleInput.value.length);
+        });
+    </script>
+</body>
+</html>
