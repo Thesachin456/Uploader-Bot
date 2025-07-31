@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lecture Collection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Lecture Collection</h1>
+            <p class="subtitle">Curated educational content at your fingertips</p>
+            <nav>
+                <a href="{{ url_for('admin') }}">⚙️ Admin Panel</a>
+            </nav>
+        </header>
+
+        {% if lectures %}
+        <div class="lectures-grid">
+            {% for lecture in lectures %}
+            <div class="lecture-card">
+                <h3 class="lecture-title">{{ lecture.title }}</h3>
+                
+                {% if lecture.description %}
+                <p class="lecture-description">{{ lecture.description }}</p>
+                {% endif %}
+
+                <!-- Video Section -->
+                {% if lecture.video_url %}
+                <div class="video-container">
+                    {% if 'youtube.com' in lecture.video_url or 'youtu.be' in lecture.video_url %}
+                        <!-- Extract YouTube ID and create embed -->
+                        {% set youtube_patterns = [
+                            'youtube\.com\/watch\?v=([a-zA-Z0-9_-]{11})',
+                            'youtu\.be\/([a-zA-Z0-9_-]{11})',
+                            'youtube\.com\/embed\/([a-zA-Z0-9_-]{11})'
+                        ] %}
+                        {% set video_id = none %}
+                        {% for pattern in youtube_patterns %}
+                            {% if not video_id %}
+                                {% set match = lecture.video_url | regex_search(pattern) %}
+                                {% if match %}
+                                    {% set video_id = match.group(1) %}
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if video_id %}
+                            <iframe 
+                                src="https://www.youtube.com/embed/{{ video_id }}" 
+                                allowfullscreen
+                                loading="lazy">
+                            </iframe>
+                        {% else %}
+                            <iframe src="{{ lecture.video_url }}" allowfullscreen loading="lazy"></iframe>
+                        {% endif %}
+                    {% elif 'vimeo.com' in lecture.video_url %}
+                        <!-- Vimeo embed -->
+                        {% set vimeo_id = lecture.video_url | regex_search('vimeo\.com\/(\d+)') %}
+                        {% if vimeo_id %}
+                            <iframe 
+                                src="https://player.vimeo.com/video/{{ vimeo_id.group(1) }}" 
+                                allowfullscreen
+                                loading="lazy">
+                            </iframe>
+                        {% else %}
+                            <iframe src="{{ lecture.video_url }}" allowfullscreen loading="lazy"></iframe>
+                        {% endif %}
+                    {% else %}
+                        <!-- Generic video embed -->
+                        <iframe src="{{ lecture.video_url }}" allowfullscreen loading="lazy"></iframe>
+                    {% endif %}
+                </div>
+                {% else %}
+                <div class="video-container">
+                    <div class="no-video">
+                        🎥 No video available
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Notes Section -->
+                {% if lecture.notes %}
+                <div class="notes-section">
+                    <h4 class="notes-title">📝 Lecture Notes</h4>
+                    <div class="notes-list">
+                        {% for note in lecture.notes %}
+                        <div class="note-item">{{ note }}</div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Source Link -->
+                {% if lecture.source_url %}
+                <div class="card-actions">
+                    <a href="{{ lecture.source_url }}" target="_blank" class="btn btn-secondary btn-small">
+                        🔗 View Original
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="admin-panel">
+            <div class="empty-state">
+                <h3>🎓 Welcome to Your Lecture Collection!</h3>
+                <p>No lectures have been added yet. Visit the admin panel to start scraping and adding educational content.</p>
+                <a href="{{ url_for('admin') }}" class="btn btn-primary" style="margin-top: 20px;">
+                    ➕ Add Your First Lecture
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Enhanced UX features
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add smooth scrolling for better navigation
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Add loading states for iframes
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach(iframe => {
+                iframe.addEventListener('load', function() {
+                    this.style.opacity = '1';
+                });
+                iframe.style.opacity = '0.8';
+                iframe.style.transition = 'opacity 0.3s ease';
+            });
+
+            // Add intersection observer for animation triggers
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+
+            // Observe all lecture cards
+            document.querySelectorAll('.lecture-card').forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(20px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
+</html>

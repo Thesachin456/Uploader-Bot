@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Lecture Scraper</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Admin Panel</h1>
+            <p class="subtitle">Manage your lecture collection</p>
+            <nav>
+                <a href="{{ url_for('index') }}">🏠 View Lectures</a>
+            </nav>
+        </header>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Add New Lecture -->
+        <div class="admin-panel">
+            <h2 class="admin-title">📚 Add New Lecture</h2>
+            <form method="POST" action="{{ url_for('scrape_lecture') }}">
+                <div class="form-group">
+                    <label for="url">Lecture URL:</label>
+                    <input 
+                        type="url" 
+                        id="url" 
+                        name="url" 
+                        class="form-input" 
+                        placeholder="https://example.com/lecture-page"
+                        required
+                    >
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    🔍 Scrape & Add Lecture
+                </button>
+            </form>
+        </div>
+
+        <!-- Existing Lectures Management -->
+        {% if lectures %}
+        <div class="admin-panel">
+            <h2 class="admin-title">📋 Manage Existing Lectures ({{ lectures|length }})</h2>
+            <div class="lectures-grid">
+                {% for lecture in lectures %}
+                <div class="lecture-card">
+                    <h3 class="lecture-title">{{ lecture.title }}</h3>
+                    
+                    {% if lecture.description %}
+                    <p class="lecture-description">{{ lecture.description[:100] }}{% if lecture.description|length > 100 %}...{% endif %}</p>
+                    {% endif %}
+
+                    {% if lecture.video_url %}
+                    <div class="video-container">
+                        {% if 'youtube.com' in lecture.video_url or 'youtu.be' in lecture.video_url %}
+                            {% set video_id = lecture.video_url | regex_replace('.*(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([a-zA-Z0-9_-]{11}).*', '\\1') %}
+                            <iframe src="https://www.youtube.com/embed/{{ video_id }}" allowfullscreen></iframe>
+                        {% else %}
+                            <iframe src="{{ lecture.video_url }}" allowfullscreen></iframe>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <div class="video-container">
+                        <div class="no-video">No video available</div>
+                    </div>
+                    {% endif %}
+
+                    {% if lecture.notes %}
+                    <div class="notes-section">
+                        <h4 class="notes-title">📝 Notes Preview</h4>
+                        <div class="notes-list">
+                            {% for note in lecture.notes[:3] %}
+                            <div class="note-item">{{ note[:80] }}{% if note|length > 80 %}...{% endif %}</div>
+                            {% endfor %}
+                            {% if lecture.notes|length > 3 %}
+                            <div class="note-item"><em>... and {{ lecture.notes|length - 3 }} more notes</em></div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="card-actions">
+                        <a href="{{ url_for('edit_lecture', lecture_id=lecture.id) }}" class="btn btn-secondary btn-small">
+                            ✏️ Edit
+                        </a>
+                        <a href="{{ lecture.source_url }}" target="_blank" class="btn btn-secondary btn-small">
+                            🔗 Source
+                        </a>
+                        <a href="{{ url_for('delete_lecture', lecture_id=lecture.id) }}" 
+                           class="btn btn-danger btn-small"
+                           onclick="return confirm('Are you sure you want to delete this lecture?')">
+                            🗑️ Delete
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="admin-panel">
+            <div class="empty-state">
+                <h3>No lectures yet</h3>
+                <p>Add your first lecture by entering a URL above</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Add some interactivity for better UX
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-focus on URL input
+            const urlInput = document.getElementById('url');
+            if (urlInput) {
+                urlInput.focus();
+            }
+
+            // Add loading state to scrape button
+            const scrapeForm = document.querySelector('form');
+            const scrapeButton = document.querySelector('button[type="submit"]');
+            
+            if (scrapeForm && scrapeButton) {
+                scrapeForm.addEventListener('submit', function() {
+                    scrapeButton.innerHTML = '⏳ Scraping...';
+                    scrapeButton.disabled = true;
+                });
+            }
+        });
+    </script>
+</body>
+</html>
